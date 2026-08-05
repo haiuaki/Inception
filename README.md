@@ -22,6 +22,9 @@ The entire infrastructure is managed via the `Makefile` located at the root of t
 | `make down` | Gracefully stops the containers and removes the default bridge network. |
 | `make nginx-test` | Builds and launches only the NGINX container in the foreground for debugging. |
 | `make nginx-shell`| Opens an interactive `sh` shell inside the running NGINX container. |
+| `make mariadb-test` | Builds and launches only the MariaDB container in the foreground for debugging. |
+| `make mariadb-run` | Securely queries the internal MariaDB database to verify WordPress user creation. |
+| `make mariadb-shell` | Opens an interactive `sh` shell inside the running MariaDB container. |
 | `make fclean` | A nuclear cleanup. Force-removes all containers, networks, volumes, and cached images. |
 | `make re` | Performs an `fclean` followed by `make`. |
 
@@ -43,12 +46,26 @@ Instead, this project utilizes a custom **Docker Bridge Network**. This creates 
 - **Minimalist Base (Images):** To keep the attack surface and file sizes as small as possible, every service is built manually from `alpine:3.23` rather than relying on bloated pre-configured images.
 - **Data Persistence (Volumes):** Containers are designed to be destroyed and recreated instantly. Because this destroys all internal files, we use Docker Volumes to securely map the MariaDB database and WordPress core files directly to physical folders on the host machine (`/home/login/data/`).
 
+### Docker Volumes vs Bind Mounts
+
+Docker containers are ephemeral; when they are destroyed, all data inside them is permanently lost. To persist data across container reboots, Docker offers two solutions:
+- **Bind Mounts:** Maps an exact file path on the host machine directly into the container. This is great for local development, as live code edits on the host instantly reflect inside the container. However, they are highly dependent on the host's exact directory structure, which makes them fragile and less secure.
+- **Docker Volumes:** These are fully managed by Docker and stored in a secure internal location on the host. Volumes are entirely decoupled from the host's specific file system structure, making them much safer, more performant, and perfectly portable across different operating systems. This project relies entirely on Docker Volumes to securely persist the MariaDB database and WordPress core files.
+
+### Secrets vs Environment Variables
+
+When setting up a database, passwords must be injected into the container securely. 
+- **Environment Variables:** The standard approach of using a `.env` file poses significant security risks. Passwords passed as environment variables are baked directly into the container's environment. Anyone who gains access to the container can simply type `env` or use a rogue PHP script to dump all passwords in plain text. Additionally, host commands like `docker inspect` will expose these passwords to anyone with access to the server.
+- **Docker Secrets:** Docker Secrets solve this by keeping passwords out of the environment entirely. Instead, Docker encrypts the password and mounts it as a temporary, read-only file (in RAM using `tmpfs`) at `/run/secrets/`. The initialization script safely reads the file to configure the service. Because the passwords are never exposed to the environment variables, `docker inspect` and `env` exploits are rendered completely useless.
+
 ## Resources
 
 ### 1. References
+
 - [Docker Hub: NGINX](https://hub.docker.com/_/nginx) - Official Docker image documentation for NGINX.
 - [OpenSSL req Documentation](https://docs.openssl.org/master/man1/openssl-req/) - Manual for generating self-signed certificates.
 - [Transport Layer Security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security) - Overview of the TLS cryptographic protocol.
+- [MariaDB Docker Deployment](https://mariadb.com/docs/server/server-management/automated-mariadb-deployment-and-administration/docker-and-mariadb/creating-a-custom-container-image) - Official guide on configuring and bootstrapping custom MariaDB container images.
 
 ### 2. Use of AI
 

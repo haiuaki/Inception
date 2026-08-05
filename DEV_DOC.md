@@ -21,9 +21,25 @@ And append the following line:
 ```
 
 ### Configuration & Secrets
-- **Infrastructure Configuration**: The core services and networks are managed via the `srcs/docker-compose.yml` file.
-- **NGINX Configuration**: The specific server routing and SSL rules are located in `srcs/requirements/nginx/conf/nginx.conf`.
-- **Secrets**: *(To be implemented when MariaDB is added. Currently, no sensitive passwords are required for the standalone NGINX container.)*
+Because this repository contains sensitive configuration, the `srcs/.env` file and `secrets/` directory are deliberately excluded via `.gitignore`. **Before running the project for the first time**, you must manually recreate them at the root of the project.
+
+**1. The `.env` file (located at `srcs/.env`):**
+```env
+# Host machine user for local volume mounting
+USER_LOGIN=your_login
+
+# Static domain name required for NGINX TLS routing
+DOMAIN_NAME=juljin.42.fr
+
+# Database configuration
+DB_NAME=wordpress
+DB_USER=wp_user
+```
+
+**2. The Secrets (located at the root):**
+You must create a `secrets/` directory containing two raw text files with your chosen passwords. These are securely mounted directly into the MariaDB container at runtime, keeping them entirely out of the environment variables.
+- `secrets/db_password.txt`: (e.g., `wp_secure_pass`)
+- `secrets/db_root_password.txt`: (e.g., `root_secure_pass`)
 
 ## 2. Build and Launch
 The entire project is managed via a single `Makefile` located at the root of the repository.
@@ -43,6 +59,11 @@ To test NGINX in isolation (without launching future dependencies):
 make nginx-test
 ```
 
+To test MariaDB in isolation (without launching future dependencies):
+```bash
+make mariadb-test
+```
+
 ## 3. Container Management Commands
 You can manage the state of the containers using the following `Makefile` targets:
 
@@ -51,7 +72,13 @@ You can manage the state of the containers using the following `Makefile` target
 | `make down` | Gracefully stops the containers and removes the default network. |
 | `make fclean` | Force-removes all containers, networks, volumes, and cached images. |
 | `make nginx-shell` | Opens an interactive `sh` shell inside the running NGINX container. |
-
+| `make mariadb-run` | Securely queries the internal MariaDB database to verify WordPress user creation. |
+| `make mariadb-shell` | Opens an interactive `sh` shell inside the running MariaDB container. |
 ## 4. Data Persistence
 
-*(Note: Currently, the NGINX container does not generate or store any dynamic persistent data. This section will be updated to document the local Host paths for the MariaDB and WordPress Docker Volumes once they are implemented.)*
+To ensure data survives container destruction, internal container paths are mapped to physical directories on the Host machine using Docker Volumes.
+
+| Service | Internal Container Path | Host Machine Path |
+| --- | --- | --- |
+| **MariaDB** | `/var/lib/mysql` | `/home/${USER_LOGIN}/data/mariadb` |
+| **WordPress** | *(Coming Soon)* | `/home/${USER_LOGIN}/data/wordpress` |

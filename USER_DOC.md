@@ -3,7 +3,7 @@
 ## 1. Provided Services
 This project provides a complete web infrastructure (LEMP Stack) packaged into Docker containers. It consists of:
 - **NGINX**: A secure web server that handles incoming HTTPS traffic.
-- **MariaDB**: *(Coming Soon)* The database engine used to store website data.
+- **MariaDB**: The relational database engine completely isolated from the host, storing website data.
 - **WordPress**: *(Coming Soon)* The Content Management System used to build and manage the website.
 
 ## 2. Starting and Stopping the Project
@@ -26,8 +26,8 @@ Once the project is started, you can access the website securely via your web br
 - **Administration Panel:** *(Coming Soon: `https://juljin.42.fr/wp-admin`)*
 
 ## 4. Credentials Management
-*(Coming Soon: This section will explain where to find the `.env` file and Docker Secrets to securely view or modify the passwords for the WordPress Administrator and Database users.)*
-
+All non-sensitive configuration (like the Database Name and Username) is stored in the `srcs/.env` file. 
+All highly sensitive passwords are kept out of the environment entirely using Docker Secrets. To view or modify passwords, edit the raw text files located inside the `secrets/` directory on the Host Machine.
 ## 5. Checking Service Health
 If you need to verify that all servers are running correctly, you can check their live status using Docker.
 
