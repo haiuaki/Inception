@@ -18,13 +18,15 @@ ENV_FILE = ./srcs/.env
 
 # Default target: Builds and launches the LEMP stack
 all:
+	@printf "$(CYAN)► Creating host data directories...$(RESET)\n"
+	@mkdir -p ~/data/mariadb
 	@printf "$(CYAN)► Building and launching the LEMP stack...$(RESET)\n"
-	@docker compose -f ${COMPOSE} up -d --build
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} up -d --build
 
 # Stop the containers safely
 down:
 	@printf "$(YELLOW)► Stopping the LEMP stack...$(RESET)\n"
-	@docker compose -f ${COMPOSE} down
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} down
 
 # --- ISOLATED DEBUGGING RULES ---------------------------------------------- //
 
@@ -38,6 +40,21 @@ nginx-shell:
 	@printf "$(MAGENTA)► Opening interactive shell inside NGINX container...$(RESET)\n"
 	@docker exec -it nginx sh
 
+# Test MariaDB in the foreground (no -d flag)
+mariadb-test:
+	@printf "$(CYAN)► Building and launching MariaDB only (ignoring dependencies)...$(RESET)\n"
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} up --build --no-deps mariadb
+
+# Run the SQL queries to print the databases and the users
+mariadb-run:
+	@printf "$(CYAN)► Testing MariaDB connection and databases...$(RESET)\n"
+	@docker exec -it mariadb mariadb -u root -p -e "SHOW DATABASES; SELECT User, Host FROM mysql.user;"
+
+# Jump in the MariaDB container
+mariadb-shell:
+	@printf "$(YELLOW)► Opening interactive shell inside MariaDB container...$(RESET)\n"
+	@docker exec -it mariadb sh
+
 # --- UTILITIES ------------------------------------------------------------- //
 
 re: fclean all
@@ -46,7 +63,10 @@ fclean:
 	@printf "$(RED)► Total clean of all Docker configurations...$(RESET)\n"
 	@# Stops and removes containers, images and network created by the .yml file
 	@docker compose -f ${COMPOSE} down --rmi all -v
+	@printf "$(RED)► Deleting persistent data folders...$(RESET)\n"
+	@sudo rm -rf ~/data/mariadb
 	@printf "$(GREEN)✓ Clean complete.$(RESET)\n"
 
 .PHONY: all down re fclean \
-        nginx-test nginx-shell
+        nginx-test nginx-shell \
+		mariadb-run mariadb-test mariadb-shell

@@ -1,4 +1,7 @@
+# --- Services layer -------------------------------------------------------- // 
+
 services:
+  # NGINX: Reverse Proxy & TLS encryption entrypoint
   nginx:
     build: requirements/nginx
     container_name: nginx
@@ -8,6 +11,42 @@ services:
     networks:
       - inception
 
+  # MariaDB: Relational database engine storing WordPress data 
+  mariadb:
+    build: requirements/mariadb
+    container_name: mariadb
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception
+    volumes:
+      - mariadb_volume:/var/lib/mysql
+    secrets:
+      - db_password
+      - db_root_password
+
+# --- Networking layer ------------------------------------------------------ // 
+
 networks:
   inception:
-    driver: bridge
+    driver: bridge # Virtual Software Router
+
+# --- Volumes layer --------------------------------------------------------- //
+
+volumes:
+  mariadb_volume:
+    driver: local
+    driver_opts:
+      type: none # Not use the default hidden volume formatting
+      o: bind # Force to bind to a physical folder
+      device: /home/${USER_LOGIN}/data/mariadb
+
+# --- Secrets layer --------------------------------------------------------- //
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+
+  db_root_password:
+    file: ../secrets/db_root_password.txt
