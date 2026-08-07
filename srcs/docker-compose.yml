@@ -56,6 +56,16 @@ services:
     networks:
       - inception
 
+  # Adminer: Database Management GUI (Bonus)
+  adminer:
+    build: requirements/bonus/adminer
+    container_name: adminer
+    restart: always
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+
 # --- Networking layer ------------------------------------------------------ // 
 
 networks:
