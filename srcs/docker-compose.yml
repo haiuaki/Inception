@@ -6,10 +6,14 @@ services:
     build: requirements/nginx
     container_name: nginx
     restart: always
+    depends_on:
+      - wordpress
     ports:
       - "443:443"
     networks:
       - inception
+    volumes:
+      - wordpress_volume:/var/www/html
 
   # MariaDB: Relational database engine storing WordPress data 
   mariadb:
@@ -25,6 +29,25 @@ services:
     secrets:
       - db_password
       - db_root_password
+
+  # WordPress: FastCGI server generatic dynamic website content
+  wordpress:
+    build: requirements/wordpress
+    container_name: wordpress
+    restart: always
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+    networks:
+      - inception
+    volumes:
+      - wordpress_volume:/var/www/html
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
+
 
 # --- Networking layer ------------------------------------------------------ // 
 
@@ -42,6 +65,14 @@ volumes:
       o: bind # Force to bind to a physical folder
       device: /home/${USER_LOGIN}/data/mariadb
 
+  wordpress_volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER_LOGIN}/data/wordpress
+
+
 # --- Secrets layer --------------------------------------------------------- //
 
 secrets:
@@ -50,3 +81,9 @@ secrets:
 
   db_root_password:
     file: ../secrets/db_root_password.txt
+
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt

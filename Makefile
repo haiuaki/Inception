@@ -17,18 +17,21 @@ ENV_FILE = ./srcs/.env
 # --- PRODUCTION RULES ------------------------------------------------------ //
 
 # Default target: Builds and launches the LEMP stack
-all:
-	@printf "$(CYAN)► Creating host data directories...$(RESET)\n"
-	@mkdir -p ~/data/mariadb
+all: setup_dirs
 	@printf "$(CYAN)► Building and launching the LEMP stack...$(RESET)\n"
 	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} up -d --build
+
+# Create host data directories if they don't exist
+setup_dirs:
+	@printf "$(CYAN)► Creating host data directories...$(RESET)\n"
+	@mkdir -p ~/data/mariadb ~/data/wordpress
 
 # Stop the containers safely
 down:
 	@printf "$(YELLOW)► Stopping the LEMP stack...$(RESET)\n"
 	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} down
 
-# --- ISOLATED DEBUGGING RULES ---------------------------------------------- //
+# --- DEBUGGING & INTERACTION RULES ------------------------------------------- //
 
 # Test NGINX in the foreground (no -d flag)
 nginx-test:
@@ -55,6 +58,34 @@ mariadb-shell:
 	@printf "$(YELLOW)► Opening interactive shell inside MariaDB container...$(RESET)\n"
 	@docker exec -it mariadb sh
 
+# Test WordPress in the foreground (no -d flag)
+wordpress-test: setup_dirs
+	@printf "$(CYAN)► Building and launching WordPress only (ignoring dependencies)...$(RESET)\n"
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} up --build --no-deps wordpress
+
+# Jump in the WordPress container
+wordpress-shell:
+	@printf "$(MAGENTA)► Opening interactive shell inside WordPress container...$(RESET)\n"
+	@docker exec -it wordpress sh
+
+# --- LOGGING RULES --------------------------------------------------------- //
+
+# View all live logs
+logs:
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} logs -f
+
+# View live NGINX logs
+nginx-logs:
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} logs -f nginx
+
+# View live MariaDB logs
+mariadb-logs:
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} logs -f mariadb
+
+# View live WordPress logs
+wordpress-logs:
+	@docker compose -f ${COMPOSE} --env-file ${ENV_FILE} logs -f wordpress
+
 # --- UTILITIES ------------------------------------------------------------- //
 
 re: fclean all
@@ -64,9 +95,11 @@ fclean:
 	@# Stops and removes containers, images and network created by the .yml file
 	@docker compose -f ${COMPOSE} down --rmi all -v
 	@printf "$(RED)► Deleting persistent data folders...$(RESET)\n"
-	@sudo rm -rf ~/data/mariadb
+	@sudo rm -rf ~/data/mariadb ~/data/wordpress
 	@printf "$(GREEN)✓ Clean complete.$(RESET)\n"
 
 .PHONY: all down re fclean \
-        nginx-test nginx-shell \
-		mariadb-run mariadb-test mariadb-shell
+        nginx-test nginx-shell nginx-logs \
+		mariadb-run mariadb-test mariadb-shell mariadb-logs \
+		wordpress-test wordpress-shell wordpress-logs \
+		setup_dirs logs
