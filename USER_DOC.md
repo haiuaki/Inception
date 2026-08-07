@@ -4,7 +4,7 @@
 This project provides a complete web infrastructure (LEMP Stack) packaged into Docker containers. It consists of:
 - **NGINX**: A secure web server that handles incoming HTTPS traffic.
 - **MariaDB**: The relational database engine completely isolated from the host, storing website data.
-- **WordPress**: *(Coming Soon)* The Content Management System used to build and manage the website.
+- **WordPress**: The PHP-FPM application server and Content Management System used to build the website.
 
 ## 2. Starting and Stopping the Project
 The entire project is controlled using simple commands from the root directory.
@@ -23,11 +23,17 @@ Once the project is started, you can access the website securely via your web br
 *(Note: You must accept the security warning for the self-signed certificate on your first visit).*
 
 - **Public Website:** `https://juljin.42.fr`
-- **Administration Panel:** *(Coming Soon: `https://juljin.42.fr/wp-admin`)*
+- **Administration Panel:** `https://juljin.42.fr/wp-login.php`
 
 ## 4. Credentials Management
 All non-sensitive configuration (like the Database Name and Username) is stored in the `srcs/.env` file. 
 All highly sensitive passwords are kept out of the environment entirely using Docker Secrets. To view or modify passwords, edit the raw text files located inside the `secrets/` directory on the Host Machine.
+
+> [!WARNING]
+> **Changing Credentials After Launch**  
+> If you start the project and later decide to change passwords in the `secrets/` folder or usernames in the `.env` file, simply running `make down` and `make` will **NOT** apply the changes! 
+> Because database configurations are permanently saved to the Host Volumes on the first boot, you must run `make fclean` to wipe the old data volumes before launching the stack again.
+
 ## 5. Checking Service Health
 If you need to verify that all servers are running correctly, you can check their live status using Docker.
 
@@ -37,5 +43,5 @@ If you need to verify that all servers are running correctly, you can check thei
   ```
 - **View live server logs (to spot errors):**
   ```bash
-  docker compose -f srcs/docker-compose.yml logs -f
+  make logs
   ```

@@ -25,6 +25,9 @@ The entire infrastructure is managed via the `Makefile` located at the root of t
 | `make mariadb-test` | Builds and launches only the MariaDB container in the foreground for debugging. |
 | `make mariadb-run` | Securely queries the internal MariaDB database to verify WordPress user creation. |
 | `make mariadb-shell` | Opens an interactive `sh` shell inside the running MariaDB container. |
+| `make wordpress-test` | Builds and launches only the WordPress container to test its isolation wait loop. |
+| `make wordpress-shell`| Opens an interactive `sh` shell inside the running WordPress container. |
+| `make logs` | Streams the live logs for all running containers simultaneously. |
 | `make fclean` | A nuclear cleanup. Force-removes all containers, networks, volumes, and cached images. |
 | `make re` | Performs an `fclean` followed by `make`. |
 
@@ -63,9 +66,11 @@ When setting up a database, passwords must be injected into the container secure
 ### 1. References
 
 - [Docker Hub: NGINX](https://hub.docker.com/_/nginx) - Official Docker image documentation for NGINX.
+- [Docker Post-Installation](https://docs.docker.com/engine/install/linux-postinstall/) - Official guide for configuring non-root user permissions for Docker.
 - [OpenSSL req Documentation](https://docs.openssl.org/master/man1/openssl-req/) - Manual for generating self-signed certificates.
 - [Transport Layer Security (TLS)](https://en.wikipedia.org/wiki/Transport_Layer_Security) - Overview of the TLS cryptographic protocol.
 - [MariaDB Docker Deployment](https://mariadb.com/docs/server/server-management/automated-mariadb-deployment-and-administration/docker-and-mariadb/creating-a-custom-container-image) - Official guide on configuring and bootstrapping custom MariaDB container images.
+- [WP-CLI Installation Guide](https://make.wordpress.org/cli/handbook/guides/installing/) - Official WordPress Command Line Interface setup guide.
 
 ### 2. Use of AI
 

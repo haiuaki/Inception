@@ -9,6 +9,14 @@ On a fresh Debian/Ubuntu Virtual Machine, install them via:
 sudo apt update && sudo apt install docker.io docker-compose make -y
 ```
 
+### Docker Permissions (Post-Installation)
+To avoid having to type `sudo` before every Docker command, you must add your current user to the `docker` group:
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
 ### Host File Configuration
 The NGINX entrypoint is strictly configured to the domain name `juljin.42.fr` over HTTPS.
 To access the site locally, you must map the loopback address to this domain using `sudo`:
@@ -34,12 +42,27 @@ DOMAIN_NAME=juljin.42.fr
 # Database configuration
 DB_NAME=wordpress
 DB_USER=wp_user
+
+# WordPress configuration
+WP_TITLE=INCEPTION
+
+WP_ADMIN_LOGIN=juljin
+WP_ADMIN_EMAIL=juljin@42.fr
+
+WP_USER_LOGIN=johndoe
+WP_USER_EMAIL=johndoe@42.fr
 ```
 
 **2. The Secrets (located at the root):**
-You must create a `secrets/` directory containing two raw text files with your chosen passwords. These are securely mounted directly into the MariaDB container at runtime, keeping them entirely out of the environment variables.
+You must create a `secrets/` directory containing raw text files with your chosen passwords. These are securely mounted directly into the containers at runtime, keeping them entirely out of the environment variables.
+
+*For MariaDB:*
 - `secrets/db_password.txt`: (e.g., `wp_secure_pass`)
 - `secrets/db_root_password.txt`: (e.g., `root_secure_pass`)
+
+*For WordPress:*
+- `secrets/wp_admin_password.txt`: (e.g., `admin_secure_pass`)
+- `secrets/wp_user_password.txt`: (e.g., `user_secure_pass`)
 
 ## 2. Build and Launch
 The entire project is managed via a single `Makefile` located at the root of the repository.
@@ -64,6 +87,11 @@ To test MariaDB in isolation (without launching future dependencies):
 make mariadb-test
 ```
 
+To test WordPress in isolation (forces a MariaDB connection wait loop):
+```bash
+make wordpress-test
+```
+
 ## 3. Container Management Commands
 You can manage the state of the containers using the following `Makefile` targets:
 
@@ -74,6 +102,10 @@ You can manage the state of the containers using the following `Makefile` target
 | `make nginx-shell` | Opens an interactive `sh` shell inside the running NGINX container. |
 | `make mariadb-run` | Securely queries the internal MariaDB database to verify WordPress user creation. |
 | `make mariadb-shell` | Opens an interactive `sh` shell inside the running MariaDB container. |
+| `make logs` | Streams the live logs for all running containers simultaneously. |
+| `make nginx-logs` | Streams only the live logs for the NGINX container. |
+| `make mariadb-logs` | Streams only the live logs for the MariaDB container. |
+| `make wordpress-logs` | Streams only the live logs for the WordPress container. |
 ## 4. Data Persistence
 
 To ensure data survives container destruction, internal container paths are mapped to physical directories on the Host machine using Docker Volumes.
@@ -81,4 +113,4 @@ To ensure data survives container destruction, internal container paths are mapp
 | Service | Internal Container Path | Host Machine Path |
 | --- | --- | --- |
 | **MariaDB** | `/var/lib/mysql` | `/home/${USER_LOGIN}/data/mariadb` |
-| **WordPress** | *(Coming Soon)* | `/home/${USER_LOGIN}/data/wordpress` |
+| **WordPress** | `/var/www/html` | `/home/${USER_LOGIN}/data/wordpress` |
