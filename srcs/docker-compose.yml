@@ -48,6 +48,13 @@ services:
       - wp_admin_password
       - wp_user_password
 
+  # Static Site: Digital Clock (Bonus)
+  static_site:
+    build: requirements/bonus/static_site
+    container_name: static_site
+    restart: always
+    networks:
+      - inception
 
 # --- Networking layer ------------------------------------------------------ // 
 

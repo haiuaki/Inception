@@ -45,3 +45,9 @@ If you need to verify that all servers are running correctly, you can check thei
   ```bash
   make logs
   ```
+
+## 6. Bonus Features
+This infrastructure includes several extra-credit bonus features that run securely alongside the main WordPress stack:
+
+- **Static Website (Digital Clock):** `https://juljin.42.fr/clock/`
+  A vanilla HTML/CSS/JS digital clock served directly by NGINX.

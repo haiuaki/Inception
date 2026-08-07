@@ -1,0 +1,71 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* White background with a faint, evenly spaced dotted grid */
+    background-color: #ffffff;
+    background-image: radial-gradient(#d1d1d1 2px, transparent 2px);
+    background-size: 30px 30px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Space Mono', monospace;
+}
+
+.clock-container {
+    /* Rectangular container */
+    background: #ffffff;
+    padding: 40px 60px;
+    border-radius: 12px;
+    
+    /* Sleek, soft shadow to make it pop slightly off the grid */
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+        
+    border: 1px solid #eaeaea;
+    text-align: center;
+}
+
+.digital-clock {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #222222;
+    letter-spacing: -2px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+}
+
+.colon {
+    opacity: 0.8;
+    margin: 0 5px;
+    animation: blink 2s infinite;
+}
+
+#ampm {
+    font-size: 1.5rem;
+    margin-left: 15px;
+    color: #666666;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+.date-display {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Subtle blinking effect for the colons */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+}
