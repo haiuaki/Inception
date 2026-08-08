@@ -74,6 +74,23 @@ services:
     networks:
       - inception
 
+  # FTP: File Transfer Protocol Server (Bonus)
+  vsftpd:
+    build: requirements/bonus/vsftpd
+    container_name: vsftpd
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    networks:
+      - inception
+    volumes:
+      - wordpress_volume:/var/www/html
+    secrets:
+      - vsftpd_password
+
 # --- Networking layer ------------------------------------------------------ // 
 
 networks:
@@ -112,3 +129,6 @@ secrets:
 
   wp_user_password:
     file: ../secrets/wp_user_password.txt
+
+  vsftpd_password:
+    file: ../secrets/vsftpd_password.txt

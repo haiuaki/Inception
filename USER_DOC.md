@@ -55,3 +55,8 @@ This infrastructure includes several extra-credit bonus features that run secure
   A lightweight graphical interface to manage the MariaDB database. Log in using the `wp_user` credentials located in your `.env` and `secrets/db_password.txt` files.
 - **Redis (In-Memory Object Cache):**
   A background caching service seamlessly integrated into WordPress. To mathematically prove it is intercepting queries, run `docker exec -it redis redis-cli monitor` and refresh the website.
+- **FTP Server (vsftpd):**
+  A dedicated FTP container pointing directly to the WordPress volume. Log in using the credentials defined in `.env` and `secrets/ftp_password.txt`.
+  - **Linux GUI:** Drag-and-drop files using the native File Manager (`ftp://localhost`).
+  - **macOS GUI:** Use FileZilla to upload files (Finder is read-only).
+  - **Terminal:** Run `ftp localhost` and use `put`/`get` commands.

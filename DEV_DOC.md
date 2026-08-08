@@ -51,6 +51,9 @@ WP_ADMIN_EMAIL=juljin@42.fr
 
 WP_USER_LOGIN=johndoe
 WP_USER_EMAIL=johndoe@42.fr
+
+# FTP Setup
+FTP_USER=ftp_admin
 ```
 
 **2. The Secrets (located at the root):**
@@ -63,6 +66,9 @@ You must create a `secrets/` directory containing raw text files with your chose
 *For WordPress:*
 - `secrets/wp_admin_password.txt`: (e.g., `admin_secure_pass`)
 - `secrets/wp_user_password.txt`: (e.g., `user_secure_pass`)
+
+*For FTP Server:*
+- `secrets/ftp_password.txt`: (e.g., `ftp_secure_pass`)
 
 ## 2. Build and Launch
 The entire project is managed via a single `Makefile` located at the root of the repository.
