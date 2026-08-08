@@ -66,6 +66,14 @@ services:
     networks:
       - inception
 
+  # Redis: In-Memory Object Cache (Bonus)
+  redis:
+    build: requirements/bonus/redis
+    container_name: redis
+    restart: always
+    networks:
+      - inception
+
 # --- Networking layer ------------------------------------------------------ // 
 
 networks:

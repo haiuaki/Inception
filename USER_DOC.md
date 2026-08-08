@@ -53,3 +53,5 @@ This infrastructure includes several extra-credit bonus features that run secure
   A vanilla HTML/CSS/JS digital clock served directly by NGINX.
 - **Adminer (Database GUI):** `https://juljin.42.fr/adminer/`
   A lightweight graphical interface to manage the MariaDB database. Log in using the `wp_user` credentials located in your `.env` and `secrets/db_password.txt` files.
+- **Redis (In-Memory Object Cache):**
+  A background caching service seamlessly integrated into WordPress. To mathematically prove it is intercepting queries, run `docker exec -it redis redis-cli monitor` and refresh the website.

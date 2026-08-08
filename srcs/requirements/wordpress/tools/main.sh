@@ -48,6 +48,12 @@ if [ ! -f "wp-config.php" ]; then
 		--user_pass="$(cat /run/secrets/wp_user_password)" \
 		--role="author"
 
+	echo "Installing Redis Cache Plugin..."
+	wp config set WP_REDIS_HOST "redis" --allow-root
+	wp config set WP_REDIS_PORT "6379" --allow-root
+	wp plugin install redis-cache --activate --allow-root
+	wp redis enable --allow-root
+
 	echo "WordPress installation complete."
 fi
 

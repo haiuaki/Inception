@@ -15,7 +15,10 @@ RUN apk add --no-cache \
 	php-mysqli \
 	php-phar \
 	php-mbstring \
-	php-iconv
+	php-iconv \
+	php-tokenizer \
+	php-ctype \
+	php-pecl-redis
 
 # Download WordPress Command Line Interface to install WordPress
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
