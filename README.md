@@ -63,7 +63,7 @@ When setting up a database, passwords must be injected into the container secure
 
 ## Resources
 
-### 1. References
+### Documentation and Tutorials
 
 - [Docker Hub: NGINX](https://hub.docker.com/_/nginx) - Official Docker image documentation for NGINX.
 - [Docker Post-Installation](https://docs.docker.com/engine/install/linux-postinstall/) - Official guide for configuring non-root user permissions for Docker.
@@ -72,7 +72,15 @@ When setting up a database, passwords must be injected into the container secure
 - [MariaDB Docker Deployment](https://mariadb.com/docs/server/server-management/automated-mariadb-deployment-and-administration/docker-and-mariadb/creating-a-custom-container-image) - Official guide on configuring and bootstrapping custom MariaDB container images.
 - [WP-CLI Installation Guide](https://make.wordpress.org/cli/handbook/guides/installing/) - Official WordPress Command Line Interface setup guide.
 
-### 2. Use of AI
+### Bonus Features Documentation
+
+- **Adminer:** [Adminer Official Site](https://www.adminer.org/) | [PHP Built-in Web Server](https://www.php.net/manual/en/features.commandline.webserver.php)
+- **Redis (Object Cache):** [Redis Official Documentation](https://redis.io/docs/latest/) | [WP-CLI Redis Cache Plugin](https://github.com/rhubarbgroup/redis-cache) | [Alpine PHP Dependencies](https://pkgs.alpinelinux.org/packages)
+- **FTP Server (vsftpd):** [Very Secure FTP Daemon (vsftpd)](https://security.appspot.com/vsftpd.html) | [vsftpd Configuration Guide](https://wiki.archlinux.org/title/Very_Secure_FTP_Daemon)
+- **Static Website:** [Python3 HTTP Server](https://docs.python.org/3/library/http.server.html)
+- **cAdvisor:** [Google cAdvisor GitHub Repository](https://github.com/google/cadvisor) | [cAdvisor Docker Mount Requirements](https://github.com/google/cadvisor/blob/master/docs/running.md#docker)
+
+### Use of AI
 
 AI was utilized as a technical assistant during the development of this project:
 - **Tasks**: Used for generating boilerplate documentation and understanding complex Docker concepts (container vs host networking, orchestration, and security best practices).
