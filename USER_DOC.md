@@ -60,3 +60,5 @@ This infrastructure includes several extra-credit bonus features that run secure
   - **Linux GUI:** Drag-and-drop files using the native File Manager (`ftp://localhost`).
   - **macOS GUI:** Use FileZilla to upload files (Finder is read-only).
   - **Terminal:** Run `ftp localhost` and use `put`/`get` commands.
+- **cAdvisor (Live Container Monitoring):** `http://localhost:8082` *(Note: Use HTTP, not HTTPS)*
+  A Google-built metrics dashboard that analyzes real-time CPU, RAM, and Network usage across all active Docker containers in the infrastructure.

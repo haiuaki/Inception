@@ -91,6 +91,23 @@ services:
     secrets:
       - vsftpd_password
 
+  # cAdvisor: Live Container Monitoring (Bonus)
+  cadvisor:
+    build: requirements/bonus/cadvisor
+    container_name: cadvisor
+    restart: always
+    # We must mount the physical host machine's system files so cAdvisor can read the live metrics
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8082:8080" # Exposed externally on port 8082
+    networks:
+      - inception
+
 # --- Networking layer ------------------------------------------------------ // 
 
 networks:
