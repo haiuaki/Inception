@@ -5,6 +5,7 @@ services:
   nginx:
     build: requirements/nginx
     container_name: nginx
+    image: nginx:1.0
     restart: always
     depends_on:
       - wordpress
@@ -19,6 +20,7 @@ services:
   mariadb:
     build: requirements/mariadb
     container_name: mariadb
+    image: mariadb:1.0
     restart: always
     env_file:
       - .env
@@ -34,6 +36,7 @@ services:
   wordpress:
     build: requirements/wordpress
     container_name: wordpress
+    image: wordpress:1.0
     restart: always
     depends_on:
       - mariadb
@@ -52,6 +55,7 @@ services:
   static_site:
     build: requirements/bonus/static_site
     container_name: static_site
+    image: static_site:1.0
     restart: always
     networks:
       - inception
@@ -60,6 +64,7 @@ services:
   adminer:
     build: requirements/bonus/adminer
     container_name: adminer
+    image: adminer:1.0
     restart: always
     depends_on:
       - mariadb
@@ -70,6 +75,7 @@ services:
   redis:
     build: requirements/bonus/redis
     container_name: redis
+    image: redis:1.0
     restart: always
     networks:
       - inception
@@ -78,6 +84,7 @@ services:
   vsftpd:
     build: requirements/bonus/vsftpd
     container_name: vsftpd
+    image: vsftpd:1.0
     restart: always
     env_file:
       - .env
@@ -95,6 +102,7 @@ services:
   cadvisor:
     build: requirements/bonus/cadvisor
     container_name: cadvisor
+    image: cadvisor:1.0
     restart: always
     # We must mount the physical host machine's system files so cAdvisor can read the live metrics
     volumes:
@@ -112,12 +120,14 @@ services:
 
 networks:
   inception:
+    name: inception
     driver: bridge # Virtual Software Router
 
 # --- Volumes layer --------------------------------------------------------- //
 
 volumes:
   mariadb_volume:
+    name: mariadb_volume
     driver: local
     driver_opts:
       type: none # Not use the default hidden volume formatting
@@ -125,6 +135,7 @@ volumes:
       device: /home/${USER_LOGIN}/data/mariadb
 
   wordpress_volume:
+    name: wordpress_volume
     driver: local
     driver_opts:
       type: none
